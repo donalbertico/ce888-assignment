@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import os
 from sklearn import preprocessing
 
 min_max_scaler = preprocessing.MinMaxScaler()
@@ -31,5 +32,32 @@ s1_x['occupation_cat'] = s1_x['occupation_cat'].replace([0],round(s1_x['occupati
 s1_x['WorkClass_cat'] = s1_x['WorkClass_cat'].replace([0],round(s1_x['WorkClass_cat'].mean()))
 s1_x['Fnlwgt'] = min_max_scaler.fit_transform(pd.DataFrame(s1_x[['Fnlwgt']].values.astype(float)))
 
-#print(dataS1)
-print(s1_x)
+print(dataS1)
+s1_x.to_csv("data/adult.csv")
+s1_y.to_csv("data/adult_target.csv")
+dataS2 = pd.read_csv("data/ionosphere.data",sep=',',header=None)
+
+s2_x = dataS2[dataS2.columns[0:34]].copy()
+s2_yaux = dataS2[34].copy()
+s2_yaux = pd.get_dummies(s2_yaux,  dataS2[34])
+s2_y = s2_yaux[s2_yaux.columns[1]]
+
+s2_x.to_csv("data/ionosphere.csv")
+s2_y.to_csv("data/ionosphere_target.csv")
+
+dataS3_names = np.array(os.listdir('data/learn'))
+dataS3 = pd.DataFrame()
+
+for name in dataS3_names:
+    data = pd.read_csv("data/learn/"+str(name),sep='\s+',header = None)
+    dataS3 = dataS3.append(data)
+
+dataS3 = dataS3.sample(frac=1).reset_index(drop=True)
+dataS3 = pd.DataFrame(np.array(dataS3))
+dataS3 = dataS3.drop(columns = [2])
+s3_y = dataS3[1]
+s3_x = dataS3.drop(columns = [1])
+s3_x.to_csv("data/art_char.csv")
+s3_y.to_csv("data/art_char_target.csv")
+print(s3_x)
+print(s3_y)
